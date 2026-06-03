@@ -49,7 +49,7 @@ const allQuestions =
   window.quizData[type] || window.quizData.battle;
 
 const info = quizInfo[type];
-const allQuestions = quizData[type];
+
 
 document.title = info.title;
 
