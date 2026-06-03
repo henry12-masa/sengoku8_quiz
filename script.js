@@ -1,5 +1,5 @@
 const params = new URLSearchParams(location.search);
-const type = params.get("type") || "battle";
+const type = params.get("type") || "strongest";
 
 const quizInfo = {
 
@@ -46,29 +46,37 @@ const quizInfo = {
 };
 
 const allQuestions =
-  window.quizData[type] || window.quizData.battle;
+  window.quizData[type] || [];
 
-const info = quizInfo[type];
-
+const info =
+  quizInfo[type] || quizInfo.strongest;
 
 document.title = info.title;
 
-document.getElementById("pageTitle").textContent = info.title;
-document.getElementById("pageDesc").textContent = info.desc;
+document.getElementById("pageTitle").textContent =
+  info.title;
 
-const quizList = document.getElementById("quizList");
+document.getElementById("pageDesc").textContent =
+  info.desc;
 
-quizList.innerHTML = Object.keys(quizInfo).map(key => `
-<a href="?type=${key}" class="${key===type ? "active" : ""}">
-${quizInfo[key].title}
-</a>
-`).join("");
+const quizList =
+  document.getElementById("quizList");
+
+quizList.innerHTML =
+  Object.keys(quizInfo).map(key => `
+    <a href="?type=${key}" class="${key===type ? "active" : ""}">
+      ${quizInfo[key].title}
+    </a>
+  `).join("");
 
 function shuffle(array){
+
   return [...array].sort(() => Math.random() - 0.5);
+
 }
 
-let questions = shuffle(allQuestions).slice(0, 50);
+let questions =
+  shuffle(allQuestions).slice(0, 50);
 
 let current = 0;
 let score = 0;
@@ -77,8 +85,11 @@ let answered = false;
 function showQuestion(){
 
   if(current >= questions.length){
+
     finishQuiz();
+
     return;
+
   }
 
   answered = false;
@@ -92,19 +103,21 @@ function showQuestion(){
     `スコア: ${score}`;
 
   document.getElementById("question").textContent =
-    q.q;
+    q.question;
 
-  document.getElementById("result").textContent = "";
+  document.getElementById("result").textContent =
+    "";
 
   document.getElementById("progressBar").style.width =
     `${(current / questions.length) * 100}%`;
 
   document.getElementById("choices").innerHTML =
-    shuffle(q.c).map(choice => `
+    shuffle(q.choices).map(choice => `
       <button onclick="checkAnswer(this,'${choice}')">
         ${choice}
       </button>
     `).join("");
+
 }
 
 function checkAnswer(button, choice){
@@ -122,13 +135,15 @@ function checkAnswer(button, choice){
 
     btn.disabled = true;
 
-    if(btn.textContent.trim() === q.a){
+    if(btn.textContent.trim() === q.answer){
+
       btn.classList.add("correct");
+
     }
 
   });
 
-  if(choice === q.a){
+  if(choice === q.answer){
 
     score++;
 
@@ -142,7 +157,7 @@ function checkAnswer(button, choice){
     button.classList.add("wrong");
 
     document.getElementById("result").textContent =
-      `不正解！ 正解は「${q.a}」`;
+      `不正解！ 正解は「${q.answer}」`;
 
   }
 
@@ -169,13 +184,20 @@ function finishQuiz(){
 
   document.getElementById("choices").innerHTML = `
     <div class="finish">
-      <p>${questions.length}問中 ${score}問正解！</p>
+
+      <p>
+        ${questions.length}問中 ${score}問正解！
+      </p>
 
       <button onclick="location.reload()">
         もう一度遊ぶ
       </button>
+
     </div>
   `;
+
+  document.getElementById("progressBar").style.width =
+    "100%";
 
 }
 
