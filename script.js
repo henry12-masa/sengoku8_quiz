@@ -68,7 +68,7 @@ function shuffle(array){
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-let questions = shuffle(allQuestions);
+let questions = shuffle(allQuestions).slice(0, 50);
 
 let current = 0;
 let score = 0;
